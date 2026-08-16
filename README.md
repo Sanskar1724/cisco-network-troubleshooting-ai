@@ -1,4 +1,38 @@
-# NetSage AI - Cisco Network Troubleshooting Assistant
+<div align="center">
+
+# NetSage AI
+
+<img src="logo.png" alt="NetSage AI Logo" width="1100">
+
+### AI-Powered Cisco Network Troubleshooting
+
+<p>
+  Diagnose network faults from Cisco Packet Tracer evidence using
+  <b>Python</b>, <b>rule-based analysis</b>, and <b>LLMs</b>.
+</p>
+
+<p>
+  <a href="docs/ARCHITECTURE.md">ARCHITECTURE</a>
+  ·
+  <a href="docs/API_REFERENCE.md">API REFERENCE</a>
+  ·
+  <a href="docs/VSCODE_SETUP.md">QUICK START</a>
+  ·
+  <a href="docs/TESTING.md">EVALUATION</a>
+  ·
+  <a href="docs/TROUBLESHOOTING.md">TROUBLESHOOTING</a>
+</p>
+
+<p>
+  <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white">
+  <img src="https://img.shields.io/badge/Cisco-Packet%20Tracer-1BA0D7?style=flat-square&logo=cisco&logoColor=white">
+  <img src="https://img.shields.io/badge/LLM-OpenRouter-7C3AED?style=flat-square">
+  <img src="https://img.shields.io/badge/AI-Diagnosis-2563EB?style=flat-square">
+  <img src="https://img.shields.io/badge/Testing-Pytest-0A9EDC?style=flat-square&logo=pytest&logoColor=white">
+  <img src="https://img.shields.io/badge/License-MIT-22C55E?style=flat-square">
+</p>
+
+</div>
 
 > **AI-assisted troubleshooter for Cisco Packet Tracer labs. Analyzes symptoms & show-command output, suggests root cause with confidence, and requires human review before accepting any fix.**
 
