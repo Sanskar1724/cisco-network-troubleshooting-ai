@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NetSage AI{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="bi bi-cpu me-2"></i>NetSage AI
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="bi bi-house me-1"></i>Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/diagnose"><i class="bi bi-search me-1"></i>Diagnose</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cases"><i class="bi bi-list-ul me-1"></i>Cases</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/review"><i class="bi bi-clipboard-check me-1"></i>Review Log</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard"><i class="bi bi-bar-chart me-1"></i>Dashboard</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="badge bg-success" id="ws-status">
+                        <i class="bi bi-wifi me-1"></i>Live
+                    </span>
+                    <span class="text-light small" id="case-count">Cases: 30</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container-fluid px-4 py-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-light border-top">
+        <div class="container-fluid text-center text-muted small">
+            NetSage AI - Cisco Network Troubleshooting Assistant | 
+            <a href="https://github.com" target="_blank" class="text-muted">GitHub</a> |
+            Safety: Human Review Required
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/main.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

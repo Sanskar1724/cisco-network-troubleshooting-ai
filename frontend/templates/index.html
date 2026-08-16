@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}NetSage AI - Home{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="display-5 fw-bold">NetSage AI</h1>
+        <p class="lead text-muted">Cisco Network Troubleshooting Assistant with Human Review</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm stat-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="text-muted text-uppercase small">Total Cases</h6>
+                        <h2 class="fw-bold mb-0" id="stat-total">30</h2>
+                    </div>
+                    <div class="bg-primary bg-opacity-10 p-3 rounded">
+                        <i class="bi bi-list-ul text-primary fs-2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm stat-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="text-muted text-uppercase small">AI Agreement</h6>
+                        <h2 class="fw-bold mb-0" id="stat-agreement">--%</h2>
+                    </div>
+                    <div class="bg-success bg-opacity-10 p-3 rounded">
+                        <i class="bi bi-check-circle text-success fs-2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm stat-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="text-muted text-uppercase small">Reviews Logged</h6>
+                        <h2 class="fw-bold mb-0" id="stat-reviews">0</h2>
+                    </div>
+                    <div class="bg-warning bg-opacity-10 p-3 rounded">
+                        <i class="bi bi-clipboard-check text-warning fs-2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm stat-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="text-muted text-uppercase small">Corrected Cases</h6>
+                        <h2 class="fw-bold mb-0" id="stat-corrected">0</h2>
+                    </div>
+                    <div class="bg-info bg-opacity-10 p-3 rounded">
+                        <i class="bi bi-pencil-square text-info fs-2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0">
+                <h5 class="mb-0"><i class="bi bi-rocket-takeoff me-2"></i>Quick Start</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <a href="/diagnose" class="btn btn-primary w-100 py-3 d-flex align-items-center justify-content-center gap-2">
+                            <i class="bi bi-search fs-4"></i>
+                            <span>Diagnose a Case</span>
+                        </a>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <a href="/dashboard" class="btn btn-outline-primary w-100 py-3 d-flex align-items-center justify-content-center gap-2">
+                            <i class="bi bi-bar-chart fs-4"></i>
+                            <span>View Dashboard</span>
+                        </a>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <a href="/cases" class="btn btn-outline-secondary w-100 py-3 d-flex align-items-center justify-content-center gap-2">
+                            <i class="bi bi-list-ul fs-4"></i>
+                            <span>Browse All Cases</span>
+                        </a>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <a href="/review" class="btn btn-outline-success w-100 py-3 d-flex align-items-center justify-content-center gap-2">
+                            <i class="bi bi-clipboard-check fs-4"></i>
+                            <span>Review Log</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-0">
+                <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>About NetSage</h5>
+            </div>
+            <div class="card-body">
+                <p class="mb-3">NetSage AI helps junior network engineers diagnose Cisco Packet Tracer lab problems by analyzing symptoms, show-command outputs, and topology notes.</p>
+                <ul class="list-unstyled small">
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>30 fault categories</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Deterministic rule checker</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>AI diagnosis with confidence</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Human review workflow</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Responsible AI logging</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Live dashboard</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-activity me-2"></i>Live System Status</h5>
+                <span class="badge bg-success"><i class="bi bi-circle-fill me-1"></i>Online</span>
+            </div>
+            <div class="card-body">
+                <div class="row g-3" id="live-stats">
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-light rounded text-center">
+                            <div class="fw-bold text-primary fs-4" id="live-cases">--</div>
+                            <div class="text-muted small">Cases Loaded</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-light rounded text-center">
+                            <div class="fw-bold text-success" id="live-reviews">--</div>
+                            <div class="text-muted small">Total Reviews</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-light rounded text-center">
+                            <div class="fw-bold text-warning" id="live-agreement">--%</div>
+                            <div class="text-muted small">Agreement Rate</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 bg-light rounded text-center">
+                            <div class="fw-bold text-info" id="live-corrected">--</div>
+                            <div class="text-muted small">Corrected</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function loadLiveStats() {
+    try {
+        const response = await fetch('/api/dashboard/data');
+        const data = await response.json();
+        
+        document.getElementById('stat-total').textContent = data.all_cases.length;
+        document.getElementById('stat-agreement').textContent = data.agreement_rate.toFixed(1) + '%';
+        document.getElementById('stat-reviews').textContent = data.stats.total;
+        document.getElementById('stat-corrected').textContent = data.corrected_cases.length;
+        
+        document.getElementById('live-cases').textContent = data.all_cases.length;
+        document.getElementById('live-reviews').textContent = data.stats.total;
+        document.getElementById('live-agreement').textContent = data.agreement_rate.toFixed(1) + '%';
+        document.getElementById('live-corrected').textContent = data.corrected_cases.length;
+    } catch (e) {
+        console.error('Failed to load stats:', e);
+    }
+}
+
+loadLiveStats();
+setInterval(loadLiveStats, 30000);
+</script>
+{% endblock %}

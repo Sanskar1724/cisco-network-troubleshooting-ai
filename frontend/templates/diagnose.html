@@ -1,0 +1,433 @@
+{% extends "base.html" %}
+
+{% block title %}Diagnose Case - NetSage AI{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3 fw-bold"><i class="bi bi-search me-2"></i>Diagnose Network Fault</h1>
+        <p class="text-muted">Enter evidence and get AI-powered diagnosis with rule checker</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0">
+                <h5 class="mb-0"><i class="bi bi-file-text me-2"></i>Network Evidence</h5>
+            </div>
+            <div class="card-body">
+                <form id="diagnose-form">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Case ID (optional)</label>
+                            <select class="form-select" id="case-id" name="case_id">
+                                <option value="">Auto-detect from evidence</option>
+                                {% for case in cases %}
+                                <option value="{{ case.case_id }}">Case {{ case.case_id }}: {{ case.title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Load from file</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="evidence-file" placeholder="case_01.txt" value="case_01.txt">
+                                <button type="button" class="btn btn-outline-secondary" onclick="loadEvidenceFile()">Load</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Evidence <span class="text-muted small">(structured sections or free text)</span></label>
+                        <textarea class="form-control font-monospace small" id="evidence-text" name="evidence_text" rows="15" placeholder="[user_description]
+PC1 cannot ping PC2. Both on same switch.
+
+[ping_results]
+Pinging 192.168.1.20 with 32 bytes of data:
+Request timed out. (4 times)
+Packets: Sent = 4, Received = 0, Lost = 4 (100% loss)
+
+[ipconfig]
+IPv4 Address: 192.168.2.10
+Subnet Mask: 255.255.255.0
+Default Gateway: 0.0.0.0
+
+[show_ip_interface_brief]
+GigabitEthernet0/0 192.168.1.1 up up
+
+[show_running_config]
+interface FastEthernet0/1
+ switchport mode access
+ switchport access vlan 10"></textarea>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg px-4" id="diagnose-btn">
+                            <i class="bi bi-search me-2"></i>Run Diagnosis
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-lg px-4" onclick="clearForm()">
+                            <i class="bi bi-x-circle me-1"></i>Clear
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-5">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-shield-check me-2"></i>Rule Checker</h5>
+                <span class="badge bg-info">Runs First</span>
+            </div>
+            <div class="card-body" id="rule-results">
+                <div class="text-center text-muted py-4">
+                    <i class="bi bi-shield-check fs-1"></i>
+                    <p class="mt-2">Run diagnosis to see deterministic checks</p>
+                    <small>Checks: subnet mask, gateway mismatch, interface down, missing VLAN, missing route, DHCP pool, ACL, NAT</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-cpu me-2"></i>AI Diagnosis</h5>
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-outline-primary" onclick="copyDiagnosis()"><i class="bi bi-clipboard me-1"></i>Copy</button>
+                    <button type="button" class="btn btn-outline-secondary" onclick="downloadDiagnosis()"><i class="bi bi-download me-1"></i>Download</button>
+                </div>
+            </div>
+            <div class="card-body" id="diagnosis-result">
+                <div class="text-center text-muted py-5">
+                    <i class="bi bi-cpu fs-1"></i>
+                    <p class="mt-2">AI diagnosis will appear here</p>
+                    <small>Includes: predicted fault, confidence, reasoning, evidence, fix, commands</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-4" id="review-section" style="display: none;">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm border-warning">
+            <div class="card-header bg-warning bg-opacity-10 border-0">
+                <h5 class="mb-0"><i class="bi bi-clipboard-check me-2"></i>Human Review Required</h5>
+            </div>
+            <div class="card-body">
+                <form id="review-form">
+                    <input type="hidden" id="review-case-id" name="case_id">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Decision</label>
+                            <select class="form-select" id="review-decision" name="decision" required>
+                                <option value="">Select...</option>
+                                <option value="Accepted">Accepted - AI is correct</option>
+                                <option value="Edited">Edited - AI partially correct</option>
+                                <option value="Rejected">Rejected - AI is wrong</option>
+                            </select>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label">Notes</label>
+                            <input type="text" class="form-control" id="review-notes" name="notes" placeholder="Optional notes about the decision">
+                        </div>
+                    </div>
+                    <div id="correction-fields" style="display: none;">
+                        <hr>
+                        <h6>Corrections (required for Edited/Rejected)</h6>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Corrected Fault</label>
+                                <input type="text" class="form-control" id="corrected-fault" name="corrected_fault" placeholder="e.g., Wrong VLAN Encapsulation">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Confidence (0-1)</label>
+                                <input type="number" class="form-control" id="corrected-confidence" name="corrected_confidence" step="0.01" min="0" max="1" value="0.95">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">Commands (comma-separated)</label>
+                                <input type="text" class="form-control" id="corrected-commands" name="corrected_commands" placeholder="enable, conf t, ...">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Corrected Reasoning</label>
+                            <textarea class="form-control" id="corrected-reasoning" name="corrected_reasoning" rows="2" placeholder="Why the AI was wrong and what the correct diagnosis is"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Corrected Fix</label>
+                            <textarea class="form-control" id="corrected-fix" name="corrected_fix" rows="2" placeholder="Step-by-step fix"></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-warning"><i class="bi bi-save me-1"></i>Save Review</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Load evidence from file
+async function loadEvidenceFile() {
+    const filename = document.getElementById('evidence-file').value;
+    if (!filename) return;
+    
+    try {
+        const response = await fetch(`/api/cases/1/evidence/${filename}`);
+        const data = await response.json();
+        if (data.evidence_raw) {
+            document.getElementById('evidence-text').value = data.evidence_raw;
+            showToast('Evidence loaded from file');
+        }
+    } catch (e) {
+        showToast('Failed to load evidence file', 'error');
+    }
+}
+
+// Handle diagnosis form
+document.getElementById('diagnose-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const btn = document.getElementById('diagnose-btn');
+    const evidenceText = document.getElementById('evidence-text').value;
+    const caseId = document.getElementById('case-id').value || null;
+    
+    if (!evidenceText.trim()) {
+        showToast('Please enter evidence', 'error');
+        return;
+    }
+    
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></i>Diagnosing...';
+    
+    try {
+        const response = await fetch('/api/diagnose', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                case_id: caseId ? parseInt(caseId) : null,
+                evidence_text: evidenceText
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            displayDiagnosis(data.diagnosis, data.formatted);
+            displayRuleResults(data.rule_results);
+            
+            // Show review section if case_id provided
+            if (caseId) {
+                document.getElementById('review-section').style.display = 'block';
+                document.getElementById('review-case-id').value = caseId;
+            }
+            
+            showToast('Diagnosis complete');
+        } else {
+            showToast(data.detail || 'Diagnosis failed', 'error');
+        }
+    } catch (error) {
+        showToast('Error: ' + error.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="bi bi-search me-2"></i>Run Diagnosis';
+    }
+});
+
+// Display rule checker results
+function displayRuleResults(results) {
+    const container = document.getElementById('rule-results');
+    
+    if (!results || results.length === 0) {
+        container.innerHTML = `
+            <div class="alert alert-success mb-0">
+                <i class="bi bi-check-circle-fill me-2"></i>No issues found by deterministic checks
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '';
+    results.forEach(r => {
+        const alertClass = r.severity === 'HIGH' ? 'alert-danger' : 'alert-warning';
+        html += `
+            <div class="alert ${alertClass} mb-2">
+                <strong>[${r.severity}] ${r.check.replace(/_/g, ' ').toUpperCase()}</strong>
+                <div class="small mt-1">${r.message}</div>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+}
+
+// Display AI diagnosis
+function displayDiagnosis(diagnosis, formatted) {
+    const container = document.getElementById('diagnosis-result');
+    
+    const confidenceClass = diagnosis.confidence >= 0.8 ? 'success' : 
+                           diagnosis.confidence >= 0.5 ? 'warning' : 'danger';
+    
+    container.innerHTML = `
+        <div class="row g-3 mb-3">
+            <div class="col-md-6">
+                <div class="p-3 bg-light rounded">
+                    <div class="text-muted small">Predicted Fault</div>
+                    <div class="fw-bold">${escapeHtml(diagnosis.predicted_fault)}</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3 bg-light rounded">
+                    <div class="text-muted small">Confidence</div>
+                    <div class="fw-bold text-${confidenceClass}">${(diagnosis.confidence * 100).toFixed(0)}%</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-3 bg-light rounded mb-3">
+            <div class="text-muted small mb-1">Reasoning</div>
+            <div>${escapeHtml(diagnosis.reasoning_summary)}</div>
+        </div>
+        
+        <div class="p-3 bg-light rounded mb-3">
+            <div class="text-muted small mb-1">Evidence Used</div>
+            <ul class="mb-0 small">
+                ${diagnosis.evidence_used.map(e => `<li>${escapeHtml(e)}</li>`).join('')}
+            </ul>
+        </div>
+        
+        <div class="p-3 bg-light rounded mb-3">
+            <div class="text-muted small mb-1">Recommended Fix</div>
+            <div>${escapeHtml(diagnosis.recommended_fix)}</div>
+        </div>
+        
+        <div class="p-3 bg-light rounded mb-3">
+            <div class="text-muted small mb-1">Commands</div>
+            <pre class="mb-0 small font-monospace bg-white p-2 rounded">${diagnosis.commands.map(escapeHtml).join('\n')}</pre>
+        </div>
+        
+        <div class="d-flex justify-content-between align-items-center">
+            <span class="badge bg-${diagnosis.needs_more_evidence ? 'warning' : 'success'}">
+                ${diagnosis.needs_more_evidence ? 'Needs More Evidence' : 'Sufficient Evidence'}
+            </span>
+        </div>
+    `;
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Handle review form
+document.getElementById('review-decision').addEventListener('change', (e) => {
+    const correctionFields = document.getElementById('correction-fields');
+    correctionFields.style.display = (e.value === 'Edited' || e.value === 'Rejected') ? 'block' : 'none';
+});
+
+document.getElementById('review-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const decision = document.getElementById('review-decision').value;
+    const needsCorrection = decision === 'Edited' || decision === 'Rejected';
+    
+    if (needsCorrection && !document.getElementById('corrected-fault').value.trim()) {
+        showToast('Corrected fault is required for Edited/Rejected', 'error');
+        return;
+    }
+    
+    const payload = {
+        case_id: parseInt(document.getElementById('review-case-id').value),
+        decision: decision,
+        notes: document.getElementById('review-notes').value
+    };
+    
+    if (needsCorrection) {
+        payload.corrected_fault = document.getElementById('corrected-fault').value;
+        payload.corrected_confidence = parseFloat(document.getElementById('corrected-confidence').value);
+        payload.corrected_reasoning = document.getElementById('corrected-reasoning').value;
+        payload.corrected_fix = document.getElementById('corrected-fix').value;
+        payload.corrected_commands = document.getElementById('corrected-commands').value.split(',').map(c => c.trim()).filter(c => c);
+    }
+    
+    try {
+        const response = await fetch('/api/review', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        });
+        
+        if (response.ok) {
+            showToast('Review saved successfully!');
+            document.getElementById('review-form').reset();
+            document.getElementById('correction-fields').style.display = 'none';
+        } else {
+            showToast('Failed to save review', 'error');
+        }
+    } catch (error) {
+        showToast('Error: ' + error.message, 'error');
+    }
+});
+
+function clearForm() {
+    document.getElementById('diagnose-form').reset();
+    document.getElementById('rule-results').innerHTML = `
+        <div class="text-center text-muted py-4">
+            <i class="bi bi-shield-check fs-1"></i>
+            <p class="mt-2">Run diagnosis to see deterministic checks</p>
+        </div>
+    `;
+    document.getElementById('diagnosis-result').innerHTML = `
+        <div class="text-center text-muted py-5">
+            <i class="bi bi-cpu fs-1"></i>
+            <p class="mt-2">AI diagnosis will appear here</p>
+        </div>
+    `;
+    document.getElementById('review-section').style.display = 'none';
+}
+
+function copyDiagnosis() {
+    const text = document.getElementById('diagnosis-result').innerText;
+    navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard'));
+}
+
+function downloadDiagnosis() {
+    const text = document.getElementById('diagnosis-result').innerText;
+    const blob = new Blob([text], {type: 'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'diagnosis.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Downloaded');
+}
+
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast align-items-center text-white bg-${type === 'error' ? 'danger' : type} border-0`;
+    toast.setAttribute('role', 'alert');
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">${message}</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    `;
+    
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        document.body.appendChild(container);
+    }
+    container.appendChild(toast);
+    new bootstrap.Toast(toast).show();
+}
+</script>
+{% endblock %}

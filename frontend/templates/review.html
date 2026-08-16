@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Review Log - NetSage AI{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3 fw-bold"><i class="bi bi-clipboard-check me-2"></i>Human Review Log</h1>
+        <p class="text-muted">Track AI diagnoses reviewed by humans - Accepted, Edited, or Rejected</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm stat-card h-100">
+            <div class="card-body text-center">
+                <h2 class="fw-bold text-primary" id="review-total">{{ stats.total }}</h2>
+                <p class="text-muted mb-0">Total Reviews</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm stat-card h-100 border-success">
+            <div class="card-body text-center">
+                <h2 class="fw-bold text-success" id="review-accepted">{{ stats.accepted }}</h2>
+                <p class="text-muted mb-0">Accepted</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm stat-card h-100 border-warning">
+            <div class="card-body text-center">
+                <h2 class="fw-bold text-warning" id="review-edited">{{ stats.edited }}</h2>
+                <p class="text-muted mb-0">Edited</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm stat-card h-100 border-danger">
+            <div class="card-body text-center">
+                <h2 class="fw-bold text-danger" id="review-rejected">{{ stats.rejected }}</h2>
+                <p class="text-muted mb-0">Rejected</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-pencil-square me-2"></i>Corrected Cases (Edited/Rejected)</h5>
+                <span class="badge bg-warning text-dark">{{ corrected|length }} cases</span>
+            </div>
+            <div class="card-body p-0">
+                {% if corrected|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 60px;">ID</th>
+                                <th>Title</th>
+                                <th>Decision</th>
+                                <th>AI Fault</th>
+                                <th>Human Fault</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for case in corrected %}
+                            <tr>
+                                <td class="fw-bold">{{ case.case_id }}</td>
+                                <td>{{ case.title }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 'success' if case.decision == 'Accepted' else 'warning' if case.decision == 'Edited' else 'danger' }}">{{ case.decision }}</span>
+                                </td>
+                                <td class="small">{{ case.ai_fault }}</td>
+                                <td class="small fw-bold text-{{ 'success' if case.decision == 'Accepted' else 'warning' if case.decision == 'Edited' else 'danger' }}">{{ case.corrected_fault or '—' }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-clipboard-check fs-1 text-muted"></i>
+                    <p class="mt-2 text-muted">No corrected cases yet</p>
+                    <p class="small text-muted">Run diagnoses and log reviews to populate</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0">
+                <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Agreement Rate</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="display-2 fw-bold text-primary" id="agreement-rate">{{ "%.1f"|format((stats.accepted / stats.total * 100) if stats.total > 0 else 0) }}%</div>
+                <p class="text-muted">AI-Human Agreement</p>
+                <div class="progress mt-3" style="height: 12px;">
+                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ (stats.accepted / stats.total * 100) if stats.total > 0 else 0 }}%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-journal-text me-2"></i>Full Review Log</h5>
+                <button class="btn btn-outline-primary btn-sm" onclick="downloadLog()"><i class="bi bi-download me-1"></i>Download Markdown</button>
+            </div>
+            <div class="card-body">
+                <div id="review-log-content" style="max-height: 500px; overflow: auto;">
+                    <div class="text-center text-muted py-4">
+                        <i class="bi bi-file-text fs-1"></i>
+                        <p class="mt-2">Loading review log...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function loadReviewLog() {
+    try {
+        const response = await fetch('/api/review/stats');
+        const data = await response.json();
+        
+        document.getElementById('review-total').textContent = data.stats.total;
+        document.getElementById('review-accepted').textContent = data.stats.accepted;
+        document.getElementById('review-edited').textContent = data.stats.edited;
+        document.getElementById('review-rejected').textContent = data.stats.rejected;
+        
+        const agreement = data.stats.total > 0 ? (data.stats.accepted / data.stats.total * 100) : 0;
+        document.getElementById('agreement-rate').textContent = agreement.toFixed(1) + '%';
+        
+        const tbody = document.querySelector('#review-log-content');
+        // Load full log from markdown file
+        const logResponse = await fetch('/static/data/human_review_log.md');
+        const logText = await logResponse.text();
+        
+        // Simple markdown to HTML conversion
+        let html = logText
+            .replace(/^## Case (\d+): (.+)$/gm, '<hr><h6>Case $1: $2</h6>')
+            .replace(/\*\*Human Decision:\*\* (.+)$/gm, '<p><strong>Decision:</strong> <span class="badge bg-$1">$1</span></p>')
+            .replace(/\*\*Timestamp:\*\* (.+)$/gm, '<p class="small text-muted">$1</p>')
+            .replace(/\*\*AI Diagnosis\*\*/gm, '<h6>AI Diagnosis</h6>')
+            .replace(/\*\*Human Correction\*\*/gm, '<h6 class="text-warning">Human Correction</h6>')
+            .replace(/\*\*Human Notes\*\*/gm, '<h6>Human Notes</h6>')
+            .replace(/^- (.+)$/gm, '<li>$1</li>')
+            .replace(/\n\n/gm, '</p><p>')
+            .replace(/\n/gm, '<br>');
+        
+        document.getElementById('review-log-content').innerHTML = `<div class="p-3">${html}</div>`;
+    } catch (error) {
+        document.getElementById('review-log-content').innerHTML = `<div class="alert alert-danger">Failed to load: ${error.message}</div>`;
+    }
+}
+
+function downloadLog() {
+    window.open('/static/data/human_review_log.md', '_blank');
+}
+
+loadReviewLog();
+</script>
+{% endblock %}

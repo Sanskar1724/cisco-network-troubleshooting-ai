@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetSage AI - Dashboard</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+               background: #f5f5f5; color: #333; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { background: #1e3a5f; color: white; padding: 30px; border-radius: 8px; margin-bottom: 30px; }
+        header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        header p { opacity: 0.9; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 25px; border-radius: 8px; 
+                     box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #1e3a5f; }
+        .stat-card h3 { font-size: 0.9rem; color: #666; margin-bottom: 8px; text-transform: uppercase; }
+        .stat-card .value { font-size: 2.5rem; font-weight: bold; color: #1e3a5f; }
+        .stat-card.accepted { border-left-color: #28a745; }
+        .stat-card.edited { border-left-color: #ffc107; }
+        .stat-card.rejected { border-left-color: #dc3545; }
+        .section { background: white; padding: 25px; border-radius: 8px; 
+                   box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px; }
+        .section h2 { color: #1e3a5f; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #eee; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; font-weight: 600; color: #333; }
+        tr:hover { background: #f8f9fa; }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 12px; 
+                  font-size: 0.8rem; font-weight: 500; }
+        .badge-high { background: #f8d7da; color: #721c24; }
+        .badge-medium { background: #fff3cd; color: #856404; }
+        .badge-low { background: #d4edda; color: #155724; }
+        .badge-accepted { background: #d4edda; color: #155724; }
+        .badge-edited { background: #fff3cd; color: #856404; }
+        .badge-rejected { background: #f8d7da; color: #721c24; }
+        .chart-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 768px) { .chart-container { grid-template-columns: 1fr; } }
+        .progress-bar { height: 8px; background: #e9ecef; border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #1e3a5f; border-radius: 4px; transition: width 0.5s; }
+        .footer { text-align: center; padding: 20px; color: #666; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>NetSage AI Dashboard</h1>
+            <p>Cisco Network Troubleshooting Assistant - 2026-08-16 13:38</p>
+        </header>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Cases</h3>
+                <div class="value">30</div>
+            </div>
+            <div class="stat-card accepted">
+                <h3>Accepted</h3>
+                <div class="value">0</div>
+            </div>
+            <div class="stat-card edited">
+                <h3>Edited</h3>
+                <div class="value">0</div>
+            </div>
+            <div class="stat-card rejected">
+                <h3>Rejected</h3>
+                <div class="value">1</div>
+            </div>
+            <div class="stat-card">
+                <h3>AI Agreement Rate</h3>
+                <div class="value">0.0%</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Reviews</h3>
+                <div class="value">1</div>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <div class="section">
+                <h2>Issue Types (by Concept)</h2>
+                <table>
+                    <thead><tr><th>Concept</th><th>Count</th><th>Distribution</th></tr></thead>
+                    <tbody>
+<tr><td>ACL</td><td>3</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 100.0%"></div></div></td></tr><tr><td>VLAN</td><td>2</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 66.66666666666666%"></div></div></td></tr><tr><td>VLAN Trunking</td><td>2</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 66.66666666666666%"></div></div></td></tr><tr><td>Inter-VLAN Routing</td><td>2</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 66.66666666666666%"></div></div></td></tr><tr><td>DHCP</td><td>2</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 66.66666666666666%"></div></div></td></tr><tr><td>DNS</td><td>2</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 66.66666666666666%"></div></div></td></tr><tr><td>NAT</td><td>2</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 66.66666666666666%"></div></div></td></tr><tr><td>IP Addressing</td><td>1</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 33.33333333333333%"></div></div></td></tr><tr><td>Subnet Mask</td><td>1</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 33.33333333333333%"></div></div></td></tr><tr><td>Default Gateway</td><td>1</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 33.33333333333333%"></div></div></td></tr><tr><td>Interface Status</td><td>1</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 33.33333333333333%"></div></div></td></tr><tr><td>Inter-VLAN Routing / 802.1Q Encapsulation</td><td>1</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 33.33333333333333%"></div></div></td></tr><tr><td>DHCP / Default Gateway</td><td>1</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 33.33333333333333%"></div></div></td></tr><tr><td>DHCP Address Pool Exhaustion</td><td>1</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 33.33333333333333%"></div></div></td></tr><tr><td>Routing</td><td>1</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 33.33333333333333%"></div></div></td></tr><tr><td>Static Routing</td><td>1</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 33.33333333333333%"></div></div></td></tr><tr><td>Router Interface</td><td>1</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 33.33333333333333%"></div></div></td></tr><tr><td>IP Addressing / Routing</td><td>1</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 33.33333333333333%"></div></div></td></tr><tr><td>DNS Connectivity</td><td>1</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 33.33333333333333%"></div></div></td></tr><tr><td>NAT / ACL</td><td>1</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 33.33333333333333%"></div></div></td></tr><tr><td>Wireless Networking</td><td>1</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 33.33333333333333%"></div></div></td></tr><tr><td>Wireless / Internal Server Connectivity</td><td>1</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 33.33333333333333%"></div></div></td></tr></tbody></table></div>
+            <div class="section">
+                <h2>Severity Distribution</h2>
+                <table>
+                    <thead><tr><th>Severity</th><th>Count</th><th>Distribution</th></tr></thead>
+                    <tbody>
+<tr><td><span class="badge badge-high">High</span></td>
+                <td>22</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 100.0%; background: #dc3545"></div></div></td></tr><tr><td><span class="badge badge-medium">Medium</span></td>
+                <td>8</td>
+                <td><div class="progress-bar"><div class="progress-fill" style="width: 36.36363636363637%; background: #ffc107"></div></div></td></tr></tbody></table></div>
+        </div>
+        
+        <div class="section">
+            <h2>Human Review Log</h2>
+<table>
+                    <thead><tr><th>Case ID</th><th>Title</th><th>Decision</th><th>AI Fault</th><th>Corrected Fault</th></tr></thead>
+                    <tbody>
+<tr>
+                    <td>10</td>
+                    <td>Missing Subinterface</td>
+                    <td><span class="badge badge-rejected">Rejected</span></td>
+                    <td>None</td>
+                    <td>—</td>
+                </tr></tbody></table></div>
+        
+        <div class="section">
+            <h2>All 30 Cases</h2>
+            <table>
+                <thead><tr><th>ID</th><th>Fault</th><th>Concept</th><th>Severity</th><th>OSI Layer</th></tr></thead>
+                <tbody>
+<tr>
+                <td>1</td>
+                <td>Wrong IP Address</td>
+                <td>IP Addressing</td>
+                <td><span class="badge badge-medium">Medium</span></td>
+                <td>Layer 3</td>
+            </tr><tr>
+                <td>2</td>
+                <td>Wrong Subnet Mask</td>
+                <td>Subnet Mask</td>
+                <td><span class="badge badge-medium">Medium</span></td>
+                <td>Layer 3</td>
+            </tr><tr>
+                <td>3</td>
+                <td>Wrong Default Gateway</td>
+                <td>Default Gateway</td>
+                <td><span class="badge badge-medium">Medium</span></td>
+                <td>Layer 3</td>
+            </tr><tr>
+                <td>4</td>
+                <td>Interface ShutdownTwo LANs connected by Router</td>
+                <td>Interface Status</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 1/2</td>
+            </tr><tr>
+                <td>5</td>
+                <td>Missing VLAN</td>
+                <td>VLAN</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 2</td>
+            </tr><tr>
+                <td>6</td>
+                <td>Wrong Access VLAN</td>
+                <td>VLAN</td>
+                <td><span class="badge badge-medium">Medium</span></td>
+                <td>Layer 2</td>
+            </tr><tr>
+                <td>7</td>
+                <td>Trunk Configuration Problem</td>
+                <td>VLAN Trunking</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 2</td>
+            </tr><tr>
+                <td>8</td>
+                <td>VLAN Allowed List Mismatch</td>
+                <td>VLAN Trunking</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 2</td>
+            </tr><tr>
+                <td>9</td>
+                <td>Missing Inter-VLAN Subinterface</td>
+                <td>Inter-VLAN Routing</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 3</td>
+            </tr><tr>
+                <td>11</td>
+                <td>Wrong VLAN Encapsulation</td>
+                <td>Inter-VLAN Routing / 802.1Q Encapsulation</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 2/3</td>
+            </tr><tr>
+                <td>10</td>
+                <td>Missing Subinterface</td>
+                <td>Inter-VLAN Routing</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 3</td>
+            </tr><tr>
+                <td>12</td>
+                <td>DHCP Pool Missing</td>
+                <td>DHCP</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 3</td>
+            </tr><tr>
+                <td>13</td>
+                <td>Wrong DHCP Network</td>
+                <td>DHCP</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 3</td>
+            </tr><tr>
+                <td>14</td>
+                <td>Wrong DHCP Gateway</td>
+                <td>DHCP / Default Gateway</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 3</td>
+            </tr><tr>
+                <td>15</td>
+                <td>DHCP Addresses Exhausted</td>
+                <td>DHCP Address Pool Exhaustion</td>
+                <td><span class="badge badge-medium">Medium</span></td>
+                <td>Layer 3</td>
+            </tr><tr>
+                <td>16</td>
+                <td>Missing Route</td>
+                <td>Routing</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 3</td>
+            </tr><tr>
+                <td>17</td>
+                <td>Wrong Static Route</td>
+                <td>Static Routing</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 3</td>
+            </tr><tr>
+                <td>18</td>
+                <td>Router Interface Down</td>
+                <td>Router Interface</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 1/3</td>
+            </tr><tr>
+                <td>19</td>
+                <td>Wrong Network Address</td>
+                <td>IP Addressing / Routing</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 3</td>
+            </tr><tr>
+                <td>20</td>
+                <td>Wrong DNS Server</td>
+                <td>DNS</td>
+                <td><span class="badge badge-medium">Medium</span></td>
+                <td>Layer 3/7</td>
+            </tr><tr>
+                <td>21</td>
+                <td>Missing DNS Record</td>
+                <td>DNS</td>
+                <td><span class="badge badge-medium">Medium</span></td>
+                <td>Layer 7</td>
+            </tr><tr>
+                <td>22</td>
+                <td>DNS Server Unreachable</td>
+                <td>DNS Connectivity</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 3/7</td>
+            </tr><tr>
+                <td>23</td>
+                <td>ACL Blocks Traffic</td>
+                <td>ACL</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 3/4</td>
+            </tr><tr>
+                <td>24</td>
+                <td>ACL on Wrong Interface</td>
+                <td>ACL</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 3/4</td>
+            </tr><tr>
+                <td>25</td>
+                <td>Wrong ACL Order</td>
+                <td>ACL</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 3/4</td>
+            </tr><tr>
+                <td>26</td>
+                <td>NAT Missing</td>
+                <td>NAT</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 3</td>
+            </tr><tr>
+                <td>27</td>
+                <td>NAT Inside/Outside Mistake</td>
+                <td>NAT</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 3</td>
+            </tr><tr>
+                <td>28</td>
+                <td>NAT ACL Mismatch</td>
+                <td>NAT / ACL</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 3</td>
+            </tr><tr>
+                <td>29</td>
+                <td>Wireless Configuration Problem</td>
+                <td>Wireless Networking</td>
+                <td><span class="badge badge-medium">Medium</span></td>
+                <td>Layer 2</td>
+            </tr><tr>
+                <td>30</td>
+                <td>Wireless ? Internal Server Problem</td>
+                <td>Wireless / Internal Server Connectivity</td>
+                <td><span class="badge badge-high">High</span></td>
+                <td>Layer 3</td>
+            </tr></tbody></table></div>
+        
+        <div class="footer">
+            Generated by NetSage AI on 2026-08-16 13:38:18 | 
+            Cisco Network Troubleshooting Assistant
+        </div>
+    </div>
+</body>
+</html>

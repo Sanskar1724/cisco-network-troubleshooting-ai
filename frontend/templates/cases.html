@@ -1,0 +1,289 @@
+{% extends "base.html" %}
+
+{% block title %}All Cases - NetSage AI{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3 fw-bold"><i class="bi bi-list-ul me-2"></i>All 30 Fault Cases</h1>
+        <p class="text-muted">Browse and search through all documented network fault categories</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" class="form-control" id="search-input" placeholder="Search by fault, concept, or ID...">
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="concept-filter">
+                            <option value="">All Concepts</option>
+                            <option value="IP Addressing">IP Addressing</option>
+                            <option value="Subnet Mask">Subnet Mask</option>
+                            <option value="Default Gateway">Default Gateway</option>
+                            <option value="Interface Status">Interface Status</option>
+                            <option value="VLAN">VLAN</option>
+                            <option value="VLAN Trunking">VLAN Trunking</option>
+                            <option value="Inter-VLAN Routing">Inter-VLAN Routing</option>
+                            <option value="Inter-VLAN Routing / 802.1Q">Inter-VLAN Routing / 802.1Q</option>
+                            <option value="DHCP">DHCP</option>
+                            <option value="DHCP / Default Gateway">DHCP / Default Gateway</option>
+                            <option value="DHCP Address Pool Exhaustion">DHCP Address Pool Exhaustion</option>
+                            <option value="Routing">Routing</option>
+                            <option value="Static Routing">Static Routing</option>
+                            <option value="Router Interface">Router Interface</option>
+                            <option value="IP Addressing / Routing">IP Addressing / Routing</option>
+                            <option value="DNS">DNS</option>
+                            <option value="DNS Connectivity">DNS Connectivity</option>
+                            <option value="ACL">ACL</option>
+                            <option value="NAT">NAT</option>
+                            <option value="NAT / ACL">NAT / ACL</option>
+                            <option value="Wireless Networking">Wireless Networking</option>
+                            <option value="Wireless / Internal Server Connectivity">Wireless / Internal Server Connectivity</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="severity-filter">
+                            <option value="">All Severities</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-secondary w-100" onclick="clearFilters()"><i class="bi bi-x-circle me-1"></i>Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="cases-table">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 60px;">ID</th>
+                                <th>Fault</th>
+                                <th>Concept</th>
+                                <th style="width: 100px;">Severity</th>
+                                <th style="width: 100px;">OSI Layer</th>
+                                <th style="width: 140px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for case in cases %}
+                            <tr data-concept="{{ case.concept }}" data-severity="{{ case.severity }}" data-id="{{ case.case_id }}" data-title="{{ case.title }}">
+                                <td class="fw-bold">{{ case.case_id }}</td>
+                                <td>{{ case.title }}</td>
+                                <td>{{ case.concept }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 'danger' if case.severity == 'High' else 'warning' if case.severity == 'Medium' else 'success' }}">{{ case.severity }}</span>
+                                </td>
+                                <td>{{ case.osi_layer }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button class="btn btn-outline-primary" onclick="viewCase({{ case.case_id }})" title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                        <button class="btn btn-outline-success" onclick="diagnoseCase({{ case.case_id }})" title="Run Diagnosis">
+                                            <i class="bi bi-search"></i>
+                                        </button>
+                                        <button class="btn btn-outline-info" onclick="runRuleCheck({{ case.case_id }})" title="Rule Checker">
+                                            <i class="bi bi-shield-check"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="caseModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="caseModalTitle">Case Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="caseModalBody">
+                <!-- Loaded via AJAX -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="modal-diagnose-btn">Diagnose This Case</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ruleCheckModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-shield-check me-2"></i>Rule Checker Results</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="ruleCheckModalBody">
+                <!-- Loaded via AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let allCases = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+    allCases = Array.from(document.querySelectorAll('#cases-table tbody tr')).map(row => ({
+        id: row.dataset.id,
+        title: row.dataset.title,
+        concept: row.dataset.concept,
+        severity: row.dataset.severity,
+        element: row
+    }));
+    
+    document.getElementById('search-input').addEventListener('input', filterCases);
+    document.getElementById('concept-filter').addEventListener('change', filterCases);
+    document.getElementById('severity-filter').addEventListener('change', filterCases);
+});
+
+function filterCases() {
+    const search = document.getElementById('search-input').value.toLowerCase();
+    const concept = document.getElementById('concept-filter').value;
+    const severity = document.getElementById('severity-filter').value;
+    
+    allCases.forEach(item => {
+        const matchesSearch = item.title.toLowerCase().includes(search) || 
+                             item.id.includes(search) ||
+                             item.concept.toLowerCase().includes(search);
+        const matchesConcept = !concept || item.concept === concept;
+        const matchesSeverity = !severity || item.severity === severity;
+        
+        item.element.style.display = (matchesSearch && matchesConcept && matchesSeverity) ? '' : 'none';
+    });
+}
+
+function clearFilters() {
+    document.getElementById('search-input').value = '';
+    document.getElementById('concept-filter').value = '';
+    document.getElementById('severity-filter').value = '';
+    filterCases();
+}
+
+async function viewCase(caseId) {
+    const modal = new bootstrap.Modal(document.getElementById('caseModal'));
+    document.getElementById('caseModalTitle').textContent = `Loading Case ${caseId}...`;
+    document.getElementById('caseModalBody').innerHTML = '<div class="text-center py-4"><div class="spinner-border"></div></div>';
+    modal.show();
+    
+    try {
+        const response = await fetch(`/api/cases/${caseId}`);
+        const data = await response.json();
+        
+        if (data.case) {
+            document.getElementById('caseModalTitle').textContent = `Case ${data.case.case_id}: ${data.case.title}`;
+            
+            let evidenceHtml = '';
+            if (data.evidence) {
+                Object.entries(data.evidence).forEach(([key, value]) => {
+                    if (value && value.trim()) {
+                        evidenceHtml += `
+                            <div class="mb-3">
+                                <h6 class="text-muted small">${key.replace(/_/g, ' ').toUpperCase()}</h6>
+                                <pre class="bg-light p-3 rounded small font-monospace" style="max-height: 200px; overflow: auto;">${escapeHtml(value)}</pre>
+                            </div>
+                        `;
+                    }
+                });
+            }
+            
+            document.getElementById('caseModalBody').innerHTML = `
+                <div class="row mb-3">
+                    <div class="col-md-6"><strong>Concept:</strong> ${data.case.concept}</div>
+                    <div class="col-md-6"><strong>Severity:</strong> <span class="badge bg-${data.case.severity === 'High' ? 'danger' : data.case.severity === 'Medium' ? 'warning' : 'success'}">${data.case.severity}</span></div>
+                    <div class="col-md-6"><strong>OSI Layer:</strong> ${data.case.osi_layer}</div>
+                    <div class="col-md-6"><strong>Expected Fault:</strong> ${data.case.expected_fault}</div>
+                </div>
+                <hr>
+                <h6>Topology</h6>
+                <p class="small">${data.case.topology}</p>
+                <h6>Symptom</h6>
+                <p class="small">${data.case.symptom}</p>
+                <h6>Topology Note</h6>
+                <p class="small">${data.case.topology_note}</p>
+                ${evidenceHtml ? `<hr><h6>Evidence</h6>${evidenceHtml}` : ''}
+            `;
+            
+            document.getElementById('modal-diagnose-btn').onclick = () => {
+                modal.hide();
+                window.location.href = `/diagnose?case=${caseId}`;
+            };
+        }
+    } catch (error) {
+        document.getElementById('caseModalBody').innerHTML = `<div class="alert alert-danger">Failed to load case: ${error.message}</div>`;
+    }
+}
+
+async function diagnoseCase(caseId) {
+    window.location.href = `/diagnose?case=${caseId}`;
+}
+
+async function runRuleCheck(caseId) {
+    const modal = new bootstrap.Modal(document.getElementById('ruleCheckModal'));
+    document.getElementById('ruleCheckModalBody').innerHTML = '<div class="text-center py-4"><div class="spinner-border"></div></div>';
+    modal.show();
+    
+    try {
+        const response = await fetch('/api/rule-check', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `case_id=${caseId}`
+        });
+        const data = await response.json();
+        
+        if (data.results && data.results.length > 0) {
+            let html = '';
+            data.results.forEach(r => {
+                const alertClass = r.severity === 'HIGH' ? 'alert-danger' : 'alert-warning';
+                html += `
+                    <div class="alert ${alertClass} mb-2">
+                        <strong>[${r.severity}] ${r.check.replace(/_/g, ' ').toUpperCase()}</strong>
+                        <div class="small mt-1">${r.message}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('ruleCheckModalBody').innerHTML = html;
+        } else {
+            document.getElementById('ruleCheckModalBody').innerHTML = `
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle-fill me-2"></i>No issues found by deterministic checks
+                </div>
+            `;
+        }
+    } catch (error) {
+        document.getElementById('ruleCheckModalBody').innerHTML = `<div class="alert alert-danger">Failed: ${error.message}</div>`;
+    }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+</script>
+{% endblock %}

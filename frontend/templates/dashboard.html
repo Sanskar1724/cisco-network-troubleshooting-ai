@@ -1,0 +1,392 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - NetSage AI{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card { transition: transform 0.2s; }
+    .stat-card:hover { transform: translateY(-2px); }
+    .chart-container { position: relative; height: 300px; }
+    .severity-badge { font-size: 0.75rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="h3 fw-bold"><i class="bi bi-bar-chart me-2"></i>Dashboard</h1>
+        <p class="text-muted">System overview, issue analytics, and AI-human agreement metrics</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-4" id="stats-cards">
+    <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm stat-card h-100 border-primary">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="text-muted text-uppercase small">Total Cases</h6>
+                        <h2 class="fw-bold mb-0" id="dash-total">30</h2>
+                    </div>
+                    <div class="bg-primary bg-opacity-10 p-3 rounded">
+                        <i class="bi bi-list-ul text-primary fs-2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm stat-card h-100 border-success">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="text-muted text-uppercase small">Accepted</h6>
+                        <h2 class="fw-bold text-success mb-0" id="dash-accepted">0</h2>
+                    </div>
+                    <div class="bg-success bg-opacity-10 p-3 rounded">
+                        <i class="bi bi-check-circle text-success fs-2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm stat-card h-100 border-warning">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="text-muted text-uppercase small">Edited</h6>
+                        <h2 class="fw-bold text-warning mb-0" id="dash-edited">0</h2>
+                    </div>
+                    <div class="bg-warning bg-opacity-10 p-3 rounded">
+                        <i class="bi bi-pencil-square text-warning fs-2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm stat-card h-100 border-danger">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="text-muted text-uppercase small">Rejected</h6>
+                        <h2 class="fw-bold text-danger mb-0" id="dash-rejected">0</h2>
+                    </div>
+                    <div class="bg-danger bg-opacity-10 p-3 rounded">
+                        <i class="bi bi-x-circle text-danger fs-2"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-0">
+                <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>AI Agreement Rate</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="display-2 fw-bold text-primary" id="dash-agreement">--%</div>
+                <p class="text-muted">Human-AI Agreement</p>
+                <div class="progress mt-3" style="height: 12px;">
+                    <div class="progress-bar bg-success" id="dash-progress" role="progressbar" style="width: 0%"></div>
+                </div>
+                <div class="mt-2 small text-muted">
+                    <span id="dash-reviewed">0</span> reviewed • 
+                    <span id="dash-corrected">0</span> corrected
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-0">
+                <h5 class="mb-0"><i class="bi bi-pie-chart me-2"></i>Issues by Concept</h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="conceptChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-0">
+                <h5 class="mb-0"><i class="bi bi-bar-chart-steps me-2"></i>Severity Distribution</h5>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="severityChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-table me-2"></i>All Cases Overview</h5>
+                <select class="form-select form-select-sm w-auto" id="table-concept-filter">
+                    <option value="">All Concepts</option>
+                </select>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="dashboard-cases-table">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 50px;">ID</th>
+                                <th>Fault</th>
+                                <th>Concept</th>
+                                <th style="width: 90px;">Severity</th>
+                                <th style="width: 90px;">OSI Layer</th>
+                                <th style="width: 100px;">Review</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboard-cases-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Corrected Cases</h5>
+                <span class="badge bg-warning text-dark" id="corrected-count">0</span>
+            </div>
+            <div class="card-body" style="max-height: 400px; overflow: auto;" id="corrected-list">
+                <div class="text-center text-muted py-4">
+                    <i class="bi bi-clipboard-check fs-1"></i>
+                    <p class="mt-2">No corrected cases yet</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0">
+                <h5 class="mb-0"><i class="bi bi-journal-code me-2"></i>Recent Review Log</h5>
+            </div>
+            <div class="card-body" style="max-height: 300px; overflow: auto;" id="recent-log">
+                <div class="text-center text-muted py-4">Loading...</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let conceptChart = null;
+let severityChart = null;
+
+async function loadDashboardData() {
+    try {
+        const response = await fetch('/api/dashboard/data');
+        const data = await response.json();
+        
+        // Update stat cards
+        document.getElementById('dash-total').textContent = data.all_cases.length;
+        document.getElementById('dash-accepted').textContent = data.stats.accepted;
+        document.getElementById('dash-edited').textContent = data.stats.edited;
+        document.getElementById('dash-rejected').textContent = data.stats.rejected;
+        
+        const agreement = data.agreement_rate;
+        document.getElementById('dash-agreement').textContent = agreement.toFixed(1) + '%';
+        document.getElementById('dash-progress').style.width = agreement + '%';
+        document.getElementById('dash-reviewed').textContent = data.stats.total;
+        document.getElementById('dash-corrected').textContent = data.corrected_cases.length;
+        
+        // Charts
+        renderConceptChart(data.concept_counts);
+        renderSeverityChart(data.severity_counts);
+        
+        // Cases table
+        renderCasesTable(data.all_cases);
+        
+        // Corrected cases
+        renderCorrectedCases(data.corrected_cases);
+        
+        // Table filter
+        populateConceptFilter(data.all_cases);
+        
+    } catch (error) {
+        console.error('Dashboard load failed:', error);
+    }
+}
+
+function renderConceptChart(counts) {
+    const ctx = document.getElementById('conceptChart').getContext('2d');
+    if (conceptChart) conceptChart.destroy();
+    
+    const labels = Object.keys(counts);
+    const values = Object.values(counts);
+    const colors = labels.map((_, i) => `hsl(${i * 360 / labels.length}, 70%, 50%)`);
+    
+    conceptChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values,
+                backgroundColor: colors,
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'right', labels: { font: { size: 10 } } },
+                title: { display: false }
+            }
+        }
+    });
+}
+
+function renderSeverityChart(counts) {
+    const ctx = document.getElementById('severityChart').getContext('2d');
+    if (severityChart) severityChart.destroy();
+    
+    const order = ['High', 'Medium', 'Low'];
+    const labels = order.filter(l => counts[l]);
+    const values = labels.map(l => counts[l]);
+    const colors = labels.map(l => l === 'High' ? '#dc3545' : l === 'Medium' ? '#ffc107' : '#28a745');
+    
+    severityChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Cases',
+                data: values,
+                backgroundColor: colors,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: { legend: { display: false } },
+            scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } }
+        }
+    });
+}
+
+function renderCasesTable(cases) {
+    const tbody = document.getElementById('dashboard-cases-body');
+    const filter = document.getElementById('table-concept-filter').value;
+    
+    tbody.innerHTML = cases
+        .filter(c => !filter || c.concept === filter)
+        .map(c => `
+            <tr>
+                <td class="fw-bold">${c.case_id}</td>
+                <td>${c.title}</td>
+                <td>${c.concept}</td>
+                <td><span class="badge bg-${c.severity === 'High' ? 'danger' : c.severity === 'Medium' ? 'warning' : 'success'}">${c.severity}</span></td>
+                <td>${c.osi_layer}</td>
+                <td>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button class="btn btn-outline-primary" onclick="window.location.href='/diagnose?case=${c.case_id}'"><i class="bi bi-search"></i></button>
+                        <button class="btn btn-outline-info" onclick="runRuleCheck(${c.case_id})"><i class="bi bi-shield-check"></i></button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+}
+
+function populateConceptFilter(cases) {
+    const concepts = [...new Set(cases.map(c => c.concept))].sort();
+    const select = document.getElementById('table-concept-filter');
+    select.innerHTML = '<option value="">All Concepts</option>' + 
+        concepts.map(c => `<option value="${c}">${c}</option>`).join('');
+    
+    select.addEventListener('change', () => renderCasesTable(cases));
+}
+
+function renderCorrectedCases(corrected) {
+    document.getElementById('corrected-count').textContent = corrected.length;
+    
+    if (corrected.length === 0) {
+        document.getElementById('corrected-list').innerHTML = `
+            <div class="text-center text-muted py-4">
+                <i class="bi bi-clipboard-check fs-1"></i>
+                <p class="mt-2">No corrected cases yet</p>
+            </div>
+        `;
+        return;
+    }
+    
+    document.getElementById('corrected-list').innerHTML = corrected.map(c => `
+        <div class="border-bottom pb-3 mb-3 last:border-0 last:pb-0">
+            <div class="d-flex justify-content-between align-items-start mb-1">
+                <strong>Case ${c.case_id}</strong>
+                <span class="badge bg-${c.decision === 'Edited' ? 'warning' : 'danger'}">${c.decision}</span>
+            </div>
+            <div class="small text-muted">${c.title}</div>
+            <div class="small mt-1">
+                <span class="text-muted">AI:</span> ${c.ai_fault}<br>
+                <span class="text-${c.decision === 'Edited' ? 'warning' : 'danger'} fw-bold">Human:</span> ${c.corrected_fault || '—'}
+            </div>
+        </div>
+    `).join('');
+}
+
+async function loadRecentLog() {
+    try {
+        const response = await fetch('/static/data/human_review_log.md');
+        const text = await response.text();
+        
+        // Show last 10 entries
+        const entries = text.split(/^## Case /m).slice(1, 11);
+        let html = '';
+        
+        entries.forEach(entry => {
+            const lines = entry.trim().split('\n');
+            const header = lines[0];
+            const decisionLine = lines.find(l => l.includes('**Human Decision:**'));
+            const decision = decisionLine ? decisionLine.replace('**Human Decision:**', '').trim() : '';
+            
+            html += `
+                <div class="border-bottom pb-2 mb-2">
+                    <div class="d-flex justify-content-between">
+                        <strong>${header}</strong>
+                        <span class="badge bg-${decision === 'Accepted' ? 'success' : decision === 'Edited' ? 'warning' : 'danger'}">${decision}</span>
+                    </div>
+                </div>
+            `;
+        });
+        
+        document.getElementById('recent-log').innerHTML = html || '<div class="text-center text-muted py-4">No reviews yet</div>';
+    } catch (error) {
+        document.getElementById('recent-log').innerHTML = '<div class="text-danger">Failed to load log</div>';
+    }
+}
+
+function runRuleCheck(caseId) {
+    window.location.href = `/cases?rulecheck=${caseId}`;
+}
+
+loadDashboardData();
+loadRecentLog();
+
+// Auto-refresh every 30 seconds
+setInterval(loadDashboardData, 30000);
+setInterval(loadRecentLog, 30000);
+</script>
+{% endblock %}
