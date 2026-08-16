@@ -1,0 +1,36 @@
+[user_description]
+The DHCP pool has no free address for a second PC. The router shows 192.168.10.254 already leased, while PC2 attempts DHCP renewal and receives 'DHCP request failed'.
+
+[ping_results]
+EVIDENCE NOT COLLECTED YET
+
+[ipconfig]
+PC1 receives IP Address 192.168.10.254
+Subnet Mask 255.255.255.0
+Default Gateway 192.168.10.1
+DNS Server 8.8.8.8
+
+[show_ip_interface_brief]
+EVIDENCE NOT COLLECTED YET
+
+[show_running_config]
+EVIDENCE NOT COLLECTED YET
+
+[show_vlan_brief]
+EVIDENCE NOT COLLECTED YET
+
+[show_interfaces_trunk]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_route]
+EVIDENCE NOT COLLECTED YET
+
+[show_access_lists]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_nat_translations]
+EVIDENCE NOT COLLECTED YET
+
+[other_cli_output]
+Router show ip dhcp binding shows 192.168.10.254 leased automatically. Router show ip dhcp pool shows the pool LAN1 and the available/leased/excluded totals. PC2 DHCP renewal fails.
+

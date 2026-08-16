@@ -1,0 +1,34 @@
+[user_description]
+The switch has VLAN 10 STAFF and VLAN 20 STUDENTS. In the faulty evidence, both PC-facing ports Fa0/1 and Fa0/2 are assigned to VLAN 20, placing two PCs in the same VLAN. The corrected evidence shows Fa0/1 in VLAN 10 and Fa0/2 in VLAN 20.
+
+[ping_results]
+EVIDENCE NOT COLLECTED YET
+
+[ipconfig]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_interface_brief]
+EVIDENCE NOT COLLECTED YET
+
+[show_running_config]
+EVIDENCE NOT COLLECTED YET
+
+[show_vlan_brief]
+Fault state: VLAN 20 STUDENTS has ports Fa0/1 and Fa0/2.
+Corrected state: VLAN 10 STAFF has Fa0/1 and VLAN 20 STUDENTS has Fa0/2.
+
+[show_interfaces_trunk]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_route]
+EVIDENCE NOT COLLECTED YET
+
+[show_access_lists]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_nat_translations]
+EVIDENCE NOT COLLECTED YET
+
+[other_cli_output]
+The screenshots explicitly show the port-to-VLAN assignment changing from both PCs in VLAN 20 to Fa0/1 in VLAN 10 and Fa0/2 in VLAN 20.
+

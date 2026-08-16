@@ -1,0 +1,37 @@
+[user_description]
+PC1 is connected to the same switch as PC2. PC1 has IPv4 address 192.168.2.10 with subnet mask 255.255.255.0 and attempts to ping 192.168.1.20. The ping fails with 100% packet loss.
+
+[ping_results]
+Pinging 192.168.1.20 with 32 bytes of data:
+Request timed out. (4 times)
+Packets: Sent = 4, Received = 0, Lost = 4 (100% loss).
+
+[ipconfig]
+IPv4 Address: 192.168.2.10
+Subnet Mask: 255.255.255.0
+Default Gateway: 0.0.0.0
+
+[show_ip_interface_brief]
+EVIDENCE NOT COLLECTED YET
+
+[show_running_config]
+EVIDENCE NOT COLLECTED YET
+
+[show_vlan_brief]
+EVIDENCE NOT COLLECTED YET
+
+[show_interfaces_trunk]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_route]
+EVIDENCE NOT COLLECTED YET
+
+[show_access_lists]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_nat_translations]
+EVIDENCE NOT COLLECTED YET
+
+[other_cli_output]
+Topology visible in Packet Tracer: PC1 — 2960-24TT Switch0 — PC2.
+

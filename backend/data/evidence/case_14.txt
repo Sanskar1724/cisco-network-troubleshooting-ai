@@ -1,0 +1,41 @@
+[user_description]
+The DHCP server gives PC1 the correct LAN IP but the wrong default gateway. The faulty gateway is 192.168.10.254, while the corrected configuration uses 192.168.10.1.
+
+[ping_results]
+Fault state: ping 192.168.10.254 — Sent = 4, Received = 0, Lost = 4 (100% loss).
+
+[ipconfig]
+Fault state: IP Address 192.168.10.2
+Subnet Mask 255.255.255.0
+Default Gateway 192.168.10.254
+DNS Server 8.8.8.8
+
+Corrected state: IP Address 192.168.10.2
+Subnet Mask 255.255.255.0
+Default Gateway 192.168.10.1
+DNS Server 8.8.8.8
+
+[show_ip_interface_brief]
+EVIDENCE NOT COLLECTED YET
+
+[show_running_config]
+EVIDENCE NOT COLLECTED YET
+
+[show_vlan_brief]
+EVIDENCE NOT COLLECTED YET
+
+[show_interfaces_trunk]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_route]
+EVIDENCE NOT COLLECTED YET
+
+[show_access_lists]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_nat_translations]
+EVIDENCE NOT COLLECTED YET
+
+[other_cli_output]
+The screenshots show the DHCP request succeeding with gateway 192.168.10.254, followed by correction to gateway 192.168.10.1.
+

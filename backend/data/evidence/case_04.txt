@@ -1,0 +1,37 @@
+[user_description]
+Router GigabitEthernet0/1 is shown administratively down. A PC tries to reach 192.168.2.10 and the connection fails. The interface is then brought up with no shutdown and the router shows it as up/up.
+
+[ping_results]
+Before repair: ping 192.168.2.10 shows Destination host unreachable / no successful packets and 100% loss.
+After repair: ping 192.168.2.10 shows 3 replies and 1 timeout (25% loss) in the captured evidence.
+
+[ipconfig]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_interface_brief]
+Before repair: GigabitEthernet0/1 192.168.2.1 administratively down/down.
+After no shutdown: GigabitEthernet0/1 192.168.2.1 up/up.
+
+[show_running_config]
+Router command used to repair the interface:
+interface gigabitEthernet 0/1
+no shutdown
+
+[show_vlan_brief]
+EVIDENCE NOT COLLECTED YET
+
+[show_interfaces_trunk]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_route]
+EVIDENCE NOT COLLECTED YET
+
+[show_access_lists]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_nat_translations]
+EVIDENCE NOT COLLECTED YET
+
+[other_cli_output]
+The repair screenshot shows LINK-5-CHANGED and LINEPROTO-5-UPDOWN messages indicating GigabitEthernet0/1 changed to up.
+

@@ -1,0 +1,33 @@
+[user_description]
+The switch VLAN configuration is being repaired by creating VLAN 10 named STAFF and VLAN 20 named STUDENTS. The show vlan brief outputs show the VLANs becoming active.
+
+[ping_results]
+EVIDENCE NOT COLLECTED YET
+
+[ipconfig]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_interface_brief]
+EVIDENCE NOT COLLECTED YET
+
+[show_running_config]
+EVIDENCE NOT COLLECTED YET
+
+[show_vlan_brief]
+Evidence shows VLAN 10 STAFF active and VLAN 20 STUDENTS active. VLAN 10 is associated with Fa0/1 in the later output and VLAN 20 with Fa0/2.
+
+[show_interfaces_trunk]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_route]
+EVIDENCE NOT COLLECTED YET
+
+[show_access_lists]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_nat_translations]
+EVIDENCE NOT COLLECTED YET
+
+[other_cli_output]
+Commands shown include creation of VLAN 10 and naming it STAFF, followed by show vlan brief. A later screenshot shows both VLAN 10 STAFF and VLAN 20 STUDENTS active.
+

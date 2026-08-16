@@ -1,0 +1,36 @@
+[user_description]
+The router's GigabitEthernet0/0.20 subinterface is removed. After removal, a PC ping to 192.168.20.10 fails with 100% loss, and show ip interface brief no longer lists G0/0.20.
+
+[ping_results]
+Pinging 192.168.20.10:
+Packets: Sent = 4, Received = 0, Lost = 4 (100% loss).
+Destination host unreachable is shown in the captured output.
+
+[ipconfig]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_interface_brief]
+After removing G0/0.20, the router shows G0/0.10 with 192.168.10.1, but no G0/0.20 subinterface.
+
+[show_running_config]
+Command shown:
+no interface gigabitEthernet 0/0.20
+
+[show_vlan_brief]
+EVIDENCE NOT COLLECTED YET
+
+[show_interfaces_trunk]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_route]
+EVIDENCE NOT COLLECTED YET
+
+[show_access_lists]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_nat_translations]
+EVIDENCE NOT COLLECTED YET
+
+[other_cli_output]
+The router reports that GigabitEthernet0/0.20 changed state to down after removal.
+

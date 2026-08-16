@@ -1,0 +1,43 @@
+[user_description]
+The router-on-a-stick configuration is being built for VLAN 10 and VLAN 20. The faulty state has no GigabitEthernet0/0.20 subinterface, and a PC ping to 192.168.20.10 fails with 100% loss. After the VLAN 20 subinterface is created, connectivity succeeds.
+
+[ping_results]
+Fault state: ping 192.168.20.10 — Sent = 4, Received = 0, Lost = 4 (100% loss).
+After repair: ping 192.168.10.20 — Sent = 4, Received = 4, Lost = 0 (0% loss).
+
+[ipconfig]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_interface_brief]
+Fault state: GigabitEthernet0/0.10 exists with 192.168.10.1; GigabitEthernet0/0.20 is absent.
+Later state: GigabitEthernet0/0.20 exists with 192.168.20.1.
+
+[show_running_config]
+VLAN 10 subinterface configuration shown:
+interface gigabitEthernet 0/0.10
+encapsulation dot1Q 10
+ip address 192.168.10.1 255.255.255.0
+
+VLAN 20 subinterface later created:
+interface gigabitEthernet 0/0.20
+encapsulation dot1Q 20
+ip address 192.168.20.1 255.255.255.0
+
+[show_vlan_brief]
+EVIDENCE NOT COLLECTED YET
+
+[show_interfaces_trunk]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_route]
+EVIDENCE NOT COLLECTED YET
+
+[show_access_lists]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_nat_translations]
+EVIDENCE NOT COLLECTED YET
+
+[other_cli_output]
+The screenshots show G0/0.20 being absent/removed and then recreated.
+

@@ -1,0 +1,35 @@
+[user_description]
+The DHCP pool LAN1 is removed from the router. The PC then receives an automatic 169.254.128.110 address instead of a normal LAN address, and the router no longer shows the DHCP pool.
+
+[ping_results]
+EVIDENCE NOT COLLECTED YET
+
+[ipconfig]
+Autoconfiguration IPv4 Address: 169.254.128.110
+Subnet Mask: 255.255.0.0
+Default Gateway: 0.0.0.0
+
+[show_ip_interface_brief]
+EVIDENCE NOT COLLECTED YET
+
+[show_running_config]
+The router configuration shows the command no ip dhcp pool LAN1 followed by exit. A subsequent show ip dhcp pool produces no pool listing.
+
+[show_vlan_brief]
+EVIDENCE NOT COLLECTED YET
+
+[show_interfaces_trunk]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_route]
+EVIDENCE NOT COLLECTED YET
+
+[show_access_lists]
+EVIDENCE NOT COLLECTED YET
+
+[show_ip_nat_translations]
+EVIDENCE NOT COLLECTED YET
+
+[other_cli_output]
+Before removal, the screenshot shows Pool LAN1. The pool is then removed with no ip dhcp pool LAN1.
+
