@@ -12,15 +12,15 @@
 </p>
 
 <p>
-  <a href="docs/ARCHITECTURE.md">ARCHITECTURE</a>
+  <a href="backend/docs/ARCHITECTURE.md">ARCHITECTURE</a>
   ·
-  <a href="docs/API_REFERENCE.md">API REFERENCE</a>
+  <a href="backend/docs/API_REFERENCE.md">API REFERENCE</a>
   ·
-  <a href="docs/VSCODE_SETUP.md">QUICK START</a>
+  <a href="backend/docs/VSCODE_SETUP.md">QUICK START</a>
   ·
-  <a href="docs/TESTING.md">EVALUATION</a>
+  <a href=backend/"docs/TESTING.md">EVALUATION</a>
   ·
-  <a href="docs/TROUBLESHOOTING.md">TROUBLESHOOTING</a>
+  <a href="backend/docs/TROUBLESHOOTING.md">TROUBLESHOOTING</a>
 </p>
 
 <p>
