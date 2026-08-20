@@ -12,15 +12,15 @@
 </p>
 
 <p>
-  <a href="docs/ARCHITECTURE.md">ARCHITECTURE</a>
+  <a href="backend/docs/ARCHITECTURE.md">ARCHITECTURE</a>
   ·
-  <a href="docs/API_REFERENCE.md">API REFERENCE</a>
+  <a href="backend/docs/API_REFERENCE.md">API REFERENCE</a>
   ·
-  <a href="docs/VSCODE_SETUP.md">QUICK START</a>
+  <a href="backend/docs/VSCODE_SETUP.md">QUICK START</a>
   ·
-  <a href="docs/TESTING.md">EVALUATION</a>
+  <a href=backend/"docs/TESTING.md">EVALUATION</a>
   ·
-  <a href="docs/TROUBLESHOOTING.md">TROUBLESHOOTING</a>
+  <a href="backend/docs/TROUBLESHOOTING.md">TROUBLESHOOTING</a>
 </p>
 
 <p>
@@ -54,8 +54,6 @@ python main_cli.py
 
 # 4. Web UI (FastAPI + templates)
 python main.py          # http://localhost:8000
-python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload
-
 
 # 5. Run tests
 $env:PYTHONPATH="."; pytest tests/ -v
@@ -89,46 +87,46 @@ Cisco_project/
 
 ## Features
 
-| Category                | Details                                          |
-| ----------------------- | ------------------------------------------------ |
+| Category | Details |
+|----------|---------|
 | **30 Fault Categories** | IP, VLAN, DHCP, DNS, Routing, ACL, NAT, Wireless |
-| **Rule Checker**        | 10 deterministic checks (runs before AI)         |
-| **AI Pipeline**         | Keyword filter → Structured prompt → LLM → JSON  |
-| **Human Review**        | Accepted / Edited / Rejected + Markdown log      |
-| **Dashboard**           | HTML + Chart.js (stats, charts, tables)          |
-| **Prompt Library**      | `diagnose_prompt.md` with 3 worked examples      |
-| **API**                 | 15 endpoints + WebSocket                         |
+| **Rule Checker** | 10 deterministic checks (runs before AI) |
+| **AI Pipeline** | Keyword filter → Structured prompt → LLM → JSON |
+| **Human Review** | Accepted / Edited / Rejected + Markdown log |
+| **Dashboard** | HTML + Chart.js (stats, charts, tables) |
+| **Prompt Library** | `diagnose_prompt.md` with 3 worked examples |
+| **API** | 15 endpoints + WebSocket |
 
 ---
 
 ## CLI Commands (main_cli.py)
 
-| #   | Command    | Description                             |
-| --- | ---------- | --------------------------------------- |
-| 1   | List Cases | All 30 faults with concept & severity   |
-| 2   | Diagnose   | Rule checker → AI → human review prompt |
-| 3   | Validate   | CSV integrity check                     |
-| 4   | Evaluate   | Batch accuracy report                   |
-| 5   | Review Log | Accepted/Edited/Rejected stats          |
-| 6   | Dashboard  | Generate & open HTML                    |
-| 7   | Rule Check | Deterministic checks on case            |
-| 8   | Exit       | Quit                                    |
+| # | Command | Description |
+|---|---------|-------------|
+| 1 | List Cases | All 30 faults with concept & severity |
+| 2 | Diagnose | Rule checker → AI → human review prompt |
+| 3 | Validate | CSV integrity check |
+| 4 | Evaluate | Batch accuracy report |
+| 5 | Review Log | Accepted/Edited/Rejected stats |
+| 6 | Dashboard | Generate & open HTML |
+| 7 | Rule Check | Deterministic checks on case |
+| 8 | Exit | Quit |
 
 ---
 
 ## API Endpoints (main.py)
 
-| Endpoint                                        | Method   | Description                |
-| ----------------------------------------------- | -------- | -------------------------- |
-| `/` `/dashboard` `/diagnose` `/cases` `/review` | GET      | Web pages                  |
-| `/api/health`                                   | GET      | Health check               |
-| `/api/cases` `/api/cases/{id}`                  | GET      | List / get case + evidence |
-| `/api/diagnose`                                 | POST     | AI diagnosis               |
-| `/api/rule-check`                               | POST     | Deterministic checks       |
-| `/api/review` `/api/review/stats`               | POST/GET | Human review               |
-| `/api/dashboard/data`                           | GET      | Dashboard JSON             |
-| `/api/evaluate` `/api/validate`                 | POST/GET | Evaluation                 |
-| `/ws`                                           | WS       | Real-time updates          |
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/` `/dashboard` `/diagnose` `/cases` `/review` | GET | Web pages |
+| `/api/health` | GET | Health check |
+| `/api/cases` `/api/cases/{id}` | GET | List / get case + evidence |
+| `/api/diagnose` | POST | AI diagnosis |
+| `/api/rule-check` | POST | Deterministic checks |
+| `/api/review` `/api/review/stats` | POST/GET | Human review |
+| `/api/dashboard/data` | GET | Dashboard JSON |
+| `/api/evaluate` `/api/validate` | POST/GET | Evaluation |
+| `/ws` | WS | Real-time updates |
 
 ---
 
@@ -199,29 +197,13 @@ See **[backend/docs/README.md](backend/docs/README.md)** for complete documentat
 // .vscode/launch.json
 {
   "configurations": [
-    {
-      "name": "FastAPI Server",
-      "type": "python",
-      "request": "launch",
-      "module": "uvicorn",
-      "args": ["main:app", "--reload", "--port", "8000"],
-      "cwd": "${workspaceFolder}/backend"
-    },
-    {
-      "name": "CLI",
-      "type": "python",
-      "request": "launch",
-      "module": "main_cli",
-      "cwd": "${workspaceFolder}/backend"
-    },
-    {
-      "name": "Pytest",
-      "type": "python",
-      "request": "launch",
-      "module": "pytest",
-      "args": ["tests", "-v"],
-      "cwd": "${workspaceFolder}/backend"
-    }
+    {"name": "FastAPI Server", "type": "python", "request": "launch",
+     "module": "uvicorn", "args": ["main:app", "--reload", "--port", "8000"],
+     "cwd": "${workspaceFolder}/backend"},
+    {"name": "CLI", "type": "python", "request": "launch",
+     "module": "main_cli", "cwd": "${workspaceFolder}/backend"},
+    {"name": "Pytest", "type": "python", "request": "launch",
+     "module": "pytest", "args": ["tests", "-v"], "cwd": "${workspaceFolder}/backend"}
   ]
 }
 ```
@@ -230,16 +212,16 @@ See **[backend/docs/README.md](backend/docs/README.md)** for complete documentat
 
 ## Key Files
 
-| File                              | Purpose                           |
-| --------------------------------- | --------------------------------- |
-| `backend/src/rule_checker.py`     | 10 deterministic checks           |
-| `backend/src/diagnosis.py`        | Pipeline: Rules → Filter → LLM    |
-| `backend/src/llm_client.py`       | OpenRouter + fallback models      |
-| `backend/src/human_review.py`     | Accepted/Edited/Rejected workflow |
-| `backend/src/dashboard.py`        | HTML + Chart.js generator         |
-| `backend/diagnose_prompt.md`      | System prompt + 3 examples        |
-| `frontend/templates/*.html`       | 5 web pages                       |
-| `backend/docs/diagnose_prompt.md` | Prompt library                    |
+| File | Purpose |
+|------|---------|
+| `backend/src/rule_checker.py` | 10 deterministic checks |
+| `backend/src/diagnosis.py` | Pipeline: Rules → Filter → LLM |
+| `backend/src/llm_client.py` | OpenRouter + fallback models |
+| `backend/src/human_review.py` | Accepted/Edited/Rejected workflow |
+| `backend/src/dashboard.py` | HTML + Chart.js generator |
+| `backend/diagnose_prompt.md` | System prompt + 3 examples |
+| `frontend/templates/*.html` | 5 web pages |
+| `backend/docs/diagnose_prompt.md` | Prompt library |
 
 ---
 
