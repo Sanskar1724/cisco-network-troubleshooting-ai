@@ -175,10 +175,13 @@ interface FastEthernet0/1
 // Load evidence from file
 async function loadEvidenceFile() {
     const filename = document.getElementById('evidence-file').value;
+    const caseId = document.getElementById('case-id').value;
     if (!filename) return;
     
+    const url = caseId ? `/api/cases/${caseId}/evidence/${filename}` : `/api/cases/1/evidence/${filename}`;
+    
     try {
-        const response = await fetch(`/api/cases/1/evidence/${filename}`);
+        const response = await fetch(url);
         const data = await response.json();
         if (data.evidence_raw) {
             document.getElementById('evidence-text').value = data.evidence_raw;
