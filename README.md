@@ -54,6 +54,8 @@ python main_cli.py
 
 # 4. Web UI (FastAPI + templates)
 python main.py          # http://localhost:8000
+python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+
 
 # 5. Run tests
 $env:PYTHONPATH="."; pytest tests/ -v
